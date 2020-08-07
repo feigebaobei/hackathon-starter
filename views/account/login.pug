@@ -1,8 +1,14 @@
 extends ../layout
 
+
 block content
+
   .pb-2.mt-2.mb-4.border-bottom
     h3 Sign in
+
+  div#qrCanvasBox
+    canvas#canvas(data-qrstr=qrstr)(style={'margin-left':'25%'})
+
   form(method='POST')
     input(type='hidden', name='_csrf', value=_csrf)
     .form-group.row
@@ -48,3 +54,8 @@ block content
         a.btn.btn-block.btn-snapchat.btn-social(href='/auth/snapchat')
           i.fab.fa-snapchat-ghost.fa-sm
           | Sign in with Snapchat
+
+
+  script(src='/js/lib/qrcode.min.js')
+  script(src='/js/lib/renderQr.js')
+

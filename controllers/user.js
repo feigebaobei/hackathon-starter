@@ -8,6 +8,7 @@ const mailChecker = require('mailchecker');
 const User = require('../models/User');
 
 const randomBytesAsync = promisify(crypto.randomBytes);
+const tokenSDKServer = require('token-sdk-server')
 
 /**
  * GET /login
@@ -17,8 +18,10 @@ exports.getLogin = (req, res) => {
   if (req.user) {
     return res.redirect('/');
   }
+  let qrstr = tokenSDKServer.genBindQrStr(['name'], 'welcome')
   res.render('account/login', {
-    title: 'Login'
+    title: 'Login',
+    qrstr: qrstr
   });
 };
 
