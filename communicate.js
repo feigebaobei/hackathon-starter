@@ -14,7 +14,7 @@ let createMessage = (content = '', receiver = [], method = '', messageId = '', c
 }
 
 var opMsg = (msgObj) => {
-  // console.log(msgObj)
+  // console.log('msgObj', msgObj)
   let isok = tokenSDKServer.verify({sign: msgObj.content.sign})
   if (isok) {
     switch(msgObj.method) {
@@ -71,6 +71,7 @@ let closefn = () => {
 // let wsc = tokenSDKServer.init({openfn: openfn, messagefn: messagefn, errorfn: errorfn, closefn: closefn})
 // console.log('wsc', wsc)
 
+// tokenSDKServer.init({openfn: openfn, messagefn: messagefn, errorfn: errorfn, closefn: closefn, isProd: true})
 tokenSDKServer.init({openfn: openfn, messagefn: messagefn, errorfn: errorfn, closefn: closefn})
 // tokenSDKServer.init({messagefn: messagefn, errorfn: errorfn, closefn: closefn})
 
@@ -121,3 +122,20 @@ tokenSDKServer.init({openfn: openfn, messagefn: messagefn, errorfn: errorfn, clo
 //   "method": "bind",
 //   "sender": "did:ttm:u0f5ef1181cb1b1a5ef48239db8abd8351a6d1a5902b84938f26f024cf1147"
 // }
+
+
+
+
+// {
+//   "type": "bindResponse",
+//   "sessionId": "AiA171TbhYcFJFPP6toDN-9solO_HSkT",
+//   "status": 200,
+//   "userInfo": {
+//     "name": "张三",
+//     "gender": "男",
+//     "nation": "汉"
+//   },
+//   "sign": "sign(hash($type$sessionId$templateId$certificateId$status$userInfo))"
+// }
+
+// {"method":"bind","content":{"type":"bindRequest","title":"","sessionId":"AiA171TbhYcFJFPP6toDN-9solO_HSkT","reqUserLevel":"N","reqUserInfoKeys":["name","gender"]},"sender":"did:ttm:a0e09fb5c4f53eee7f8f4fff4429d072381b1b2c23e9800998ecf8427ebc1e"}
