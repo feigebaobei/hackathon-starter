@@ -13,32 +13,28 @@ let createMessage = (content = '', receiver = [], method = '', messageId = '', c
   })
 }
 
-var opMsg = (msg) => {
-  let msgObj = JSON.parse(msg)
+var opMsg = (msgObj) => {
   // console.log(msgObj)
-  // console.log(JSON.parse(msgObj.content))
-  switch(msgObj.method) {
-    case 'bind':
-      let msgContent = JSON.parse(msgObj.content)
-      // console.log(msgContent)
-      let sid = msgContent.sessionId || ''
-      // let session = getSessionBySid(sid)
-      // console.log('session', session)
-      getSessionBySid(sid).then(os => {
-        // console.log(response)
-        os.bindResponse = msgContent
-        setSession(sid, os)
-        // .then(response => { // response 是 undefined
-        //   // console.log('setSession', response)
+  let isok = tokenSDKServer.verify({sign: msgObj.content.sign})
+  if (isok) {
+    switch(msgObj.method) {
+      case 'bind':
+        let msgContent = msgObj.content
+        let sid = msgContent.sessionId || ''
+        getSessionBySid(sid).then(os => {
+          os.bindResponse = msgContent
+          setSession(sid, os)
+        })
+        // .catch(error => {
+        //   // console.log(error)
         // })
-      })
-      .catch(error => {
-        // console.log(error)
-      })
-      break
-    case 'auth':
-    default:
-      break
+        break
+      case 'auth':
+      default:
+        break
+    }
+  } else {
+    console.log('验签失败')
   }
 }
 
@@ -46,11 +42,11 @@ let openfn = () => {
   console.log('openfn')
 
 }
-let messagefn = (msg) => {
+let messagefn = (msgObj) => {
   // console.log('messagefn', msg, JSON.parse(msg))
   // console.log('messagefn', JSON.parse(msg))
   // console.log('messagefn', msg)
-  opMsg(msg)
+  opMsg(msgObj)
   // getAllSession().then(response => {
   //   console.log(response)
   // })
@@ -106,4 +102,22 @@ tokenSDKServer.init({openfn: openfn, messagefn: messagefn, errorfn: errorfn, clo
 //       "sign": "sign(hash($type$sessionId$templateId$certificateId$status$userInfo))"
 //     }
 //   }
+// }
+
+// {
+//   "content": {
+//     "certificateId": "0x16f0ce919808ccccc61144303b154fa58f12e66fbfb1a2d8b96651c84076dedd",
+//     "sessionId": "DBVBHjt4QB9HGN_4B1vn6qavfUHppJKp",
+//     "sign": "0x1e6239d23c6c3563194c3aeefa8e15664a77c8d05bd5a4c9b6b5bcf6f62235b62bf2612aef22350b8c53bd39343e74b6b0874adaa64c0793ead016589192ae9e00",
+//     "status": 200,
+//     "type": "bindResponse",
+//     "userInfo": {
+//       "name": "李庆雪",
+//       "gender": "男"
+//      }
+//   },
+//   "createTime": "1596955098192",
+//   "messageId": "9544f1b8-564c-4346-8fb5-e09568e6ac11",
+//   "method": "bind",
+//   "sender": "did:ttm:u0f5ef1181cb1b1a5ef48239db8abd8351a6d1a5902b84938f26f024cf1147"
 // }

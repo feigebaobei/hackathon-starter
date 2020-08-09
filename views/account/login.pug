@@ -62,7 +62,7 @@ block content
     $(document).ready(function () {
       let {origin} = document.location
       let canvasDom = document.getElementById('canvas')
-      let timeThreshold = 2
+      let timeThreshold = 60
       let reqLoginStatus = () => {
         $.ajax({
           url: `${origin}/user/loginStatus`,
@@ -78,6 +78,8 @@ block content
               if (timeThreshold) {
                 timeThreshold--
                 setTimeout(function () {reqLoginStatus()}, 1000)
+              } else {
+                alert('登录超时了，需要重新登录请刷新当前页面。')
               }
             }
           },
