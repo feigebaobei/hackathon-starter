@@ -15,13 +15,15 @@ const tokenSDKServer = require('token-sdk-server')
  * Login page.
  */
 exports.getLogin = (req, res) => {
+  // console.log(req)
   if (req.user) {
     return res.redirect('/');
   }
-  let qrstr = tokenSDKServer.genBindQrStr(['name'], 'welcome')
+
   res.render('account/login', {
     title: 'Login',
-    qrstr: qrstr
+    qrstr: tokenSDKServer.genBindQrStr(['name', 'gender'], 'N', req.sessionID),
+    sid: req.sessionID
   });
 };
 

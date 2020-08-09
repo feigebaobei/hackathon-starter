@@ -10,6 +10,12 @@ html
     link(rel='shortcut icon', href='/favicon.png')
     link(rel='stylesheet', href='/css/main.css')
     block head
+    script(src='/js/lib/jquery.min.js')
+    script(src='/js/lib/popper.min.js')
+    script(src='/js/lib/bootstrap.min.js')
+    script(src='/js/main.js')
+    // script(src='/js/test.js')
+    // script(src='/js/lib/qrcode.min.js')
 
   body
     include partials/header
@@ -20,12 +26,6 @@ html
 
     include partials/footer
 
-    script(src='/js/lib/jquery.min.js')
-    script(src='/js/lib/popper.min.js')
-    script(src='/js/lib/bootstrap.min.js')
-    script(src='/js/main.js')
-    // script(src='/js/test.js')
-    // script(src='/js/lib/qrcode.min.js')
 
     // Google Analytics: change UA-XXXXX-X to be your site's ID
     script.

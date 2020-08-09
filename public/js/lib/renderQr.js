@@ -6,5 +6,5 @@ let qrstr = canvasDom.getAttribute('data-qrstr')
 // QRCode.toCanvas(document.getElementById('canvas'), 'sample text', function (error) {
 QRCode.toCanvas(canvasDom, qrstr, function (error) {
   if (error) console.error(error)
-  console.log('success!');
+  // console.log('success!');
 })

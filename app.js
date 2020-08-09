@@ -8,9 +8,10 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const chalk = require('chalk');
 const errorHandler = require('errorhandler');
-const lusca = require('lusca');
+// const lusca = require('lusca');
 const dotenv = require('dotenv');
-const MongoStore = require('connect-mongo')(session);
+// const MongoStore = require('connect-mongo')(session);
+const {mongoStore} = require('./mongoStore.js')
 const flash = require('express-flash');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -18,6 +19,7 @@ const passport = require('passport');
 const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
+const config = require('./config/index.js')
 
 const upload = multer({ dest: path.join(__dirname, 'uploads') });
 
@@ -34,7 +36,10 @@ const userController = require('./controllers/user');
 const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
 
+const userRouter = require('./routes/users')
+
 var webSocket = require('./communicate.js')
+// var webSocket = require('./communicata2.js')
 
 /**
  * API keys and Passport configuration.
@@ -49,16 +54,17 @@ const app = express();
 /**
  * Connect to MongoDB.
  */
-// mongoose.set('useFindAndModify', false);
-// mongoose.set('useCreateIndex', true);
-// mongoose.set('useNewUrlParser', true);
-// mongoose.set('useUnifiedTopology', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useUnifiedTopology', true);
 // mongoose.connect(process.env.MONGODB_URI);
-// mongoose.connection.on('error', (err) => {
-//   console.error(err);
-//   console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
-//   process.exit();
-// });
+mongoose.connect(config.MONGODB_URI);
+mongoose.connection.on('error', (err) => {
+  console.error(err);
+  console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
+  process.exit();
+});
 
 /**
  * Express configuration.
@@ -80,26 +86,29 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
   resave: true,
   saveUninitialized: true,
+  name: 'sessionName',
   secret: process.env.SESSION_SECRET,
   cookie: { maxAge: 1209600000 }, // two weeks in milliseconds
-  store: new MongoStore({
-    url: process.env.MONGODB_URI,
-    autoReconnect: true,
-  })
+  // store: new MongoStore({
+  //   url: process.env.MONGODB_URI,
+  //   autoReconnect: true,
+  // })
+  store: mongoStore
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.use((req, res, next) => {
-  if (req.path === '/api/upload') {
-    // Multer multipart/form-data handling needs to occur before the Lusca CSRF check.
-    next();
-  } else {
-    lusca.csrf()(req, res, next);
-  }
-});
-app.use(lusca.xframe('SAMEORIGIN'));
-app.use(lusca.xssProtection(true));
+// app.use((req, res, next) => {
+//   if (req.path === '/api/upload') {
+//     // Multer multipart/form-data handling needs to occur before the Lusca CSRF check.
+//     next();
+//   } else {
+//     lusca.csrf()(req, res, next);
+//   }
+// });
+// app.use(lusca.xframe('SAMEORIGIN'));
+// app.use(lusca.xframe('ALLOW-FROM'));
+// app.use(lusca.xssProtection(true));
 app.disable('x-powered-by');
 app.use((req, res, next) => {
   res.locals.user = req.user;
@@ -119,11 +128,15 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.use('/user', userRouter)
+
 app.use('/', express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/chart.js/dist'), { maxAge: 31557600000 }));
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/popper.js/dist/umd'), { maxAge: 31557600000 }));
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js'), { maxAge: 31557600000 }));
 app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/jquery/dist'), { maxAge: 31557600000 }));
+app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/qrcode/build'), { maxAge: 31557600000 }));
 app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawesome/fontawesome-free/webfonts'), { maxAge: 31557600000 }));
 
 /**
@@ -175,8 +188,10 @@ app.get('/api/paypal', apiController.getPayPal);
 app.get('/api/paypal/success', apiController.getPayPalSuccess);
 app.get('/api/paypal/cancel', apiController.getPayPalCancel);
 app.get('/api/lob', apiController.getLob);
-app.get('/api/upload', lusca({ csrf: true }), apiController.getFileUpload);
-app.post('/api/upload', upload.single('myFile'), lusca({ csrf: true }), apiController.postFileUpload);
+// app.get('/api/upload', lusca({ csrf: true }), apiController.getFileUpload);
+// app.post('/api/upload', upload.single('myFile'), lusca({ csrf: true }), apiController.postFileUpload);
+app.get('/api/upload', apiController.getFileUpload);
+app.post('/api/upload', upload.single('myFile'), apiController.postFileUpload);
 app.get('/api/pinterest', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getPinterest);
 app.post('/api/pinterest', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.postPinterest);
 app.get('/api/here-maps', apiController.getHereMaps);
