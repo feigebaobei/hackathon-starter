@@ -1,0 +1,45 @@
+extends ../layout
+
+block content
+  div#qrCanvasBox
+    canvas#canvas(data-qrstr=qrstr, style={'margin-left':'25%'}, 'data-sessionId'=sid)
+
+  p#timeBox(style={'text-align': 'center'})
+  script(src='/js/lib/qrcode.min.js')
+  script(src='/js/lib/renderQr.js')
+  script.
+    $(document).ready(function () {
+      let {origin} = document.location
+      let canvasDom = document.getElementById('canvas')
+      let timeBoxDom = document.getElementById('timeBox')
+      let timeThreshold = 60
+      let reqLoginStatus = () => {
+        $.ajax({
+          url: `${origin}/user/loginStatus`,
+          data: {
+            sessionId: canvasDom.getAttribute('data-sessionId')
+          },
+          type: 'POST',
+          success: function (e) {
+            // console.log(e)
+            if (e.result) {
+              location.href = '/'
+            } else {
+              if (timeThreshold) {
+                timeThreshold--
+                setTimeout(function () {reqLoginStatus()}, 1000)
+                // if (time)
+                timeBox.innerText = `二维码的有效时间：${timeThreshold + 1}s.`
+              } else {
+                // alert('登录超时了，需要重新登录请刷新当前页面。')
+                timeBox.innerText = `二维码无效了，若需要重新登录请刷新当前页面。`
+              }
+            }
+          },
+          error: function (e) {
+            console.log('error', e)
+          }
+        })
+      }
+      reqLoginStatus()
+    })

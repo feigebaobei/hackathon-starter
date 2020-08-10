@@ -111,6 +111,8 @@ app.use(flash());
 // app.use(lusca.xssProtection(true));
 app.disable('x-powered-by');
 app.use((req, res, next) => {
+  // console.log('req.user', req.user)
+  // console.log('req.user', req)
   res.locals.user = req.user;
   next();
 });
@@ -204,6 +206,28 @@ app.get('/api/quickbooks', passportConfig.isAuthenticated, passportConfig.isAuth
 /**
  * OAuth authentication routes. (Sign in)
  */
+// app.get('/auth/token', passport.authenticate('token', { scope: ['basic', 'public_content'] }));
+// app.get('/auth/token/callback', passport.authenticate('token', { failureRedirect: '/login' }), (req, res) => {
+//   res.redirect(req.session.returnTo || '/');
+// });
+// app.get('/login', userController.getLogin);
+// app.get('/auth/token', (req, res, next) => {
+//   console.log('next', next)
+//   // res.redirect()
+// })
+app.get('/auth/token', userController.authToken)
+// app.get('/auth/token', (req, res) => {
+//   // console.log('req', req)
+//   // res.status(200).json({
+//   //   result: true,
+//   //   message: '234rt',
+//   //   data: {key: 'value'}
+//   // })
+//   res.render('api/token', {
+//     title: '2345',
+//     qrstr: 
+//   })
+// })
 app.get('/auth/instagram', passport.authenticate('instagram', { scope: ['basic', 'public_content'] }));
 app.get('/auth/instagram/callback', passport.authenticate('instagram', { failureRedirect: '/login' }), (req, res) => {
   res.redirect(req.session.returnTo || '/');

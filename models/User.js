@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
   twitch: String,
   quickbooks: String,
   tokens: Array,
+  token: String, // token的did
 
   profile: {
     name: String,

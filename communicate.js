@@ -22,12 +22,11 @@ var opMsg = (msgObj) => {
         let msgContent = msgObj.content
         let sid = msgContent.sessionId || ''
         getSessionBySid(sid).then(os => {
-          os.bindResponse = msgContent
-          setSession(sid, os)
+          if (os) {
+            os.bindResponse = msgContent
+            setSession(sid, os)
+          }
         })
-        // .catch(error => {
-        //   // console.log(error)
-        // })
         break
       case 'auth':
       default:

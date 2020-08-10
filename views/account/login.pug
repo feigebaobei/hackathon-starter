@@ -6,9 +6,6 @@ block content
   .pb-2.mt-2.mb-4.border-bottom
     h3 Sign in
 
-  div#qrCanvasBox
-    canvas#canvas(data-qrstr=qrstr, style={'margin-left':'25%'}, 'data-sessionId'=sid)
-
   form(method='POST')
     input(type='hidden', name='_csrf', value=_csrf)
     .form-group.row
@@ -30,6 +27,9 @@ block content
         hr
     .form-group
       .offset-md-3.col-md-7.pl-2
+        a.btn.btn-block.btn-twitter.btn-social(href='/auth/token')
+          i.fab.fa-google-plus-g.fa-xs
+          | Sign in with token
         a.btn.btn-block.btn-google.btn-social(href='/auth/google')
           i.fab.fa-google-plus-g.fa-xs
           | Sign in with Google
@@ -54,40 +54,4 @@ block content
         a.btn.btn-block.btn-snapchat.btn-social(href='/auth/snapchat')
           i.fab.fa-snapchat-ghost.fa-sm
           | Sign in with Snapchat
-
-
-  script(src='/js/lib/qrcode.min.js')
-  script(src='/js/lib/renderQr.js')
-  script.
-    $(document).ready(function () {
-      let {origin} = document.location
-      let canvasDom = document.getElementById('canvas')
-      let timeThreshold = 60
-      let reqLoginStatus = () => {
-        $.ajax({
-          url: `${origin}/user/loginStatus`,
-          data: {
-            sessionId: canvasDom.getAttribute('data-sessionId')
-          },
-          type: 'POST',
-          success: function (e) {
-            console.log(e)
-            if (e.result) {
-              location.href = '/'
-            } else {
-              if (timeThreshold) {
-                timeThreshold--
-                setTimeout(function () {reqLoginStatus()}, 1000)
-              } else {
-                alert('登录超时了，需要重新登录请刷新当前页面。')
-              }
-            }
-          },
-          error: function (e) {
-            console.log('error', e)
-          }
-        })
-      }
-      reqLoginStatus()
-    })
 

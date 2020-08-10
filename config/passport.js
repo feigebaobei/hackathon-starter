@@ -11,6 +11,7 @@ const { Strategy: GitHubStrategy } = require('passport-github2');
 const { OAuth2Strategy: GoogleStrategy } = require('passport-google-oauth');
 const { Strategy: LinkedInStrategy } = require('passport-linkedin-oauth2');
 const { Strategy: OpenIDStrategy } = require('passport-openid');
+// const { Strategy: TokenStrategy } = require('passport-openid');
 const { OAuthStrategy } = require('passport-oauth');
 const { OAuth2Strategy } = require('passport-oauth');
 const _ = require('lodash');
@@ -117,6 +118,19 @@ passport.use(new SnapchatStrategy({
     });
   }
 }));
+
+/**
+ * sign in with Token
+ */
+// passport.use(new TokenStrategy({}), (req, accessToken, tokenSecret, profile, done) => {
+//   if (req.user) {
+
+//   } else {
+
+//   }
+// })
+
+console.log(FacebookStrategy)
 
 /**
  * Sign in with Facebook.
