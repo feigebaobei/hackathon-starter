@@ -22,8 +22,8 @@ exports.getLogin = (req, res) => {
 
   res.render('account/login', {
     title: 'Login',
-    qrstr: tokenSDKServer.genBindQrStr(['name', 'gender'], 'N', req.sessionID),
-    sid: req.sessionID
+    // qrstr: tokenSDKServer.genBindQrStr(['name', 'gender'], 'N', req.sessionID, 'example application'),
+    // sid: req.sessionID
   });
 };
 
@@ -63,7 +63,7 @@ exports.postLogin = (req, res, next) => {
 exports.authToken = (req, res) => {
   res.render('api/token', {
     title: 'token welcome you',
-    qrstr: tokenSDKServer.genBindQrStr(['name', 'gender'], 'N', req.sessionID),
+    qrstr: tokenSDKServer.genBindQrStr(['name', 'gender'], 'N', req.sessionID, 'title example'),
     sid: req.sessionID
   })
 }
