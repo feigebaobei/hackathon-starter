@@ -64,8 +64,6 @@ exports.authToken = (req, res) => {
   res.render('api/token', {
     title: 'token welcome you',
     qrstr: tokenSDKServer.genBindQrStr(['name', 'gender'], 'N', req.sessionID),
-    // qrstr: '12345',
-    // qr
     sid: req.sessionID
   })
 }

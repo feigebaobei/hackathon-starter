@@ -76,7 +76,7 @@
     "pug": "^3.0.0",
     "qrcode": "^1.4.4",
     "stripe": "^8.69.0",
-    "token-sdk-server": "0.0.19",
+    "token-sdk-server": "0.0.20",
     "tumblr.js": "^2.0.2",
     "twilio": "^3.48.0",
     "twit": "^2.2.11",
