@@ -21,9 +21,7 @@ exports.getLogin = (req, res) => {
   }
 
   res.render('account/login', {
-    title: 'Login',
-    // qrstr: tokenSDKServer.genBindQrStr(['name', 'gender'], 'N', req.sessionID, 'example application'),
-    // sid: req.sessionID
+    title: 'Login'
   });
 };
 
